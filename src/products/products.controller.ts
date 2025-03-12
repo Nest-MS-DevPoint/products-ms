@@ -12,9 +12,9 @@ export class ProductsController {
   logger = new Logger()
 
   // @Post()
-  @MessagePattern({cmd : 'create'})
+  @MessagePattern({cmd : 'create_product'})
   create(@Payload () createProductDto: CreateProductDto) {
-
+    this.logger.log(createProductDto)
     return this.productsService.create(createProductDto);
   }
 
