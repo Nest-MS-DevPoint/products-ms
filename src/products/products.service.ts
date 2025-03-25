@@ -12,6 +12,8 @@ export class ProductsService extends PrismaClient implements OnModuleInit {
     this.$connect();
     this.logger.log('Database connected!')
   }
+
+
   async create(createProductDto: CreateProductDto) {
     this.logger.log('--------------------')
     try {
@@ -79,5 +81,27 @@ export class ProductsService extends PrismaClient implements OnModuleInit {
     // return this.product.delete({
     //   where: {id}
     // });
+  }
+
+  async validateProducts(ids: number[]){
+    ids = Array.from( new Set(ids) );
+
+    const products = await this.product.findMany({
+      where: {
+        id: {
+          in: ids
+        }
+      }
+    })
+
+    if (products.length !== ids.length){
+      throw new RpcException({
+        message: 'Some products were not found',
+        status: HttpStatus.BAD_REQUEST
+      })
+    }
+    this.logger.log(products)
+
+    return products;
   }
 }
